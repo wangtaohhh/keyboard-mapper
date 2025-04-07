@@ -1,5 +1,5 @@
-using System.Text.Json;
-
+using System.IO;
+using System.Text;
 
 
 namespace WinFormsApp1
@@ -13,10 +13,10 @@ namespace WinFormsApp1
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            // 如果我们操作【×】按钮，那么不关闭程序而是缩小化到托盘，并提示用户.
+            
             if (this.WindowState != FormWindowState.Minimized)
             {
-                //取消"关闭窗口"事件
+                
                 e.Cancel = true;
                 //使关闭时窗口向右下角缩小的效果
                 this.WindowState = FormWindowState.Minimized;
@@ -30,6 +30,17 @@ namespace WinFormsApp1
 
         private void Form1_Load(object sender, EventArgs e)
         {
+
+            StreamReader sr = new StreamReader("C:\\Users\\wangt\\Desktop\\cpp_learn\\WinFormsApp1\\mappingconfig.txt");
+
+            string line = sr.ReadLine();
+
+            while (line != null)
+            {
+                this.listBox1.Items.Add(line);
+                line = sr.ReadLine();
+            }
+
 
         }
 
@@ -49,17 +60,30 @@ namespace WinFormsApp1
                 for (int i = 0; i < listBox1.Items.Count; i++)
                 {
                     //TODO
-                    // convert to json
+                    // convert to txt
 
-                    a[i] = Convert.ToInt32(listBox1.Items[i]);
+                    //a[i] = Convert.ToInt32(listBox1.Items[i]);
 
 
                 }
 
                 listBox1.Items.Add(textBox1.Text + "+" + textBox2.Text + "+" + textBox3.Text);
-                string jsonString = JsonSerializer.Serialize(textBox1.Text + "-" + textBox2.Text + "-" + textBox3.Text);
-                File.WriteAllText("C:\\Users\\wangt\\Desktop\\cpp_learn\\WinFormsApp1\\mappingconfig.json", jsonString);
+                //string jsonString = JsonSerializer.Serialize(textBox1.Text + "-" + textBox2.Text + "-" + textBox3.Text);
+                //File.WriteAllText("C:\\Users\\wangt\\Desktop\\cpp_learn\\WinFormsApp1\\mappingconfig.txt", jsonString);
+
             }
+
+            StreamWriter sw_config = new StreamWriter("C:\\Users\\wangt\\Desktop\\cpp_learn\\WinFormsApp1\\mappingconfig.txt", false, Encoding.ASCII);
+
+
+            foreach (string item in this.listBox1.Items)
+            {
+                sw_config.Write(item);
+                sw_config.Write('\n');
+
+                //MessageBox.Show(item);
+            }
+            sw_config.Close();
         }
 
         private void notifyIcon1_MouseClick(object sender, MouseEventArgs e)
